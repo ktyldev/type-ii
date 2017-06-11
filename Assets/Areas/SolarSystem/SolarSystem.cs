@@ -4,22 +4,19 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// READ: the universe. This is the root object for orbital physics.
+/// READ: the universe. This is the root object for orbital movement.
 /// </summary>
 public class SolarSystem : MonoBehaviour {
     public float timeWarp;
     public GameObject root;
-
-    private KeplerTreeNode _root;
+    
+    public KeplerTreeNode tree { get; private set; }
 
     private List<KeyValuePair<KeplerTreeNode, Orbit>> _orbits;
 
     void Awake() {
         _orbits = new List<KeyValuePair<KeplerTreeNode, Orbit>>();
-    }
-
-    void Start() {
-        _root = InstantiateKeplerBody(root);
+        tree = InstantiateKeplerBody(root);
     }
     
     void Update() {
@@ -45,7 +42,8 @@ public class SolarSystem : MonoBehaviour {
         }
 
         foreach (var satelliteTemplate in body.satelliteTemplates) {
-            InstantiateKeplerBody(satelliteTemplate, body);
+            var satellite = InstantiateKeplerBody(satelliteTemplate, body);
+            body.satellites.Add(satellite);
         }
 
         return body;
