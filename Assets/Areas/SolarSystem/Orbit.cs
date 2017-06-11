@@ -10,7 +10,7 @@ public class Orbit {
     private float _distance;
     private Transform _centre;
 
-    public Orbit(KeplerBody parent, float distance) {
+    public Orbit(KeplerTreeNode parent, float distance) {
         _centre = parent.transform;
         _distance = distance;
         _speed = Mathf.Sqrt(parent.mass / distance);

@@ -10,12 +10,12 @@ public class SolarSystem : MonoBehaviour {
     public float timeWarp;
     public GameObject root;
 
-    private KeplerBody _root;
+    private KeplerTreeNode _root;
 
-    private List<KeyValuePair<KeplerBody, Orbit>> _orbits;
+    private List<KeyValuePair<KeplerTreeNode, Orbit>> _orbits;
 
     void Awake() {
-        _orbits = new List<KeyValuePair<KeplerBody, Orbit>>();
+        _orbits = new List<KeyValuePair<KeplerTreeNode, Orbit>>();
     }
 
     void Start() {
@@ -32,16 +32,16 @@ public class SolarSystem : MonoBehaviour {
         }
     }
 
-    private KeplerBody InstantiateKeplerBody(GameObject template, KeplerBody parent = null) {
+    private KeplerTreeNode InstantiateKeplerBody(GameObject template, KeplerTreeNode parent = null) {
         var body = Instantiate(template, parent == null ? transform : parent.transform)
-            .GetComponent<KeplerBody>();
+            .GetComponent<KeplerTreeNode>();
 
         if (body == null)
             throw new Exception();
         
         if (parent != null) {
             var orbit = new Orbit(parent, body.distanceFromParent);
-            _orbits.Add(new KeyValuePair<KeplerBody, Orbit>(body, orbit));
+            _orbits.Add(new KeyValuePair<KeplerTreeNode, Orbit>(body, orbit));
         }
 
         foreach (var satelliteTemplate in body.satelliteTemplates) {
