@@ -15,6 +15,7 @@ public class CameraController : MonoBehaviour {
     public float minZoom;
     public float maxZoom;
 
+    public bool enablePanning;
     public float panMargin;
     
     private float _distance;
@@ -23,20 +24,24 @@ public class CameraController : MonoBehaviour {
     private Transform _target;
 
     private float GetVerticalAxis() {
-        if (Input.mousePosition.y > Screen.height - panMargin) {
-            return 1;
-        } else if (Input.mousePosition.y < panMargin) {
-            return -1;
+        if (enablePanning) {
+            if (Input.mousePosition.y > Screen.height - panMargin) {
+                return 1;
+            } else if (Input.mousePosition.y < panMargin) {
+                return -1;
+            }
         }
 
         return Input.GetAxis("Vertical");
     }
 
     private float GetHorizontalAxis() {
-        if (Input.mousePosition.x > Screen.width - panMargin) {
-            return 1;
-        } else if (Input.mousePosition.x < panMargin) {
-            return -1;
+        if (enablePanning) {
+            if (Input.mousePosition.x > Screen.width - panMargin) {
+                return 1;
+            } else if (Input.mousePosition.x < panMargin) {
+                return -1;
+            }
         }
 
         return Input.GetAxis("Horizontal");
