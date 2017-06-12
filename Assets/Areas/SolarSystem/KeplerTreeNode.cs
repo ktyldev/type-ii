@@ -11,8 +11,8 @@ public class KeplerTreeNode : MonoBehaviour {
     public float radius;
     public float mass;
     public float distanceFromParent;
-
     public bool isRoot;
+
     private GameObject _geometry;
     private List<KeplerTreeNode> _satellites;
     private Orbit _orbit;
@@ -43,11 +43,7 @@ public class KeplerTreeNode : MonoBehaviour {
     public List<KeplerTreeNode> Satellites() {
         return _satellites;
     }
-
-    public void AddSatellite(KeplerTreeNode satellite) {
-        _satellites.Add(satellite);
-    }
-
+    
     public void BuildSatellites() {
         _satellites = satellites.Select(BuildSatellite).ToList();
     }

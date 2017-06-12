@@ -6,7 +6,7 @@ using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
 public class SystemView : MonoBehaviour {
-
+    
     private KeplerTreeNode _keplerTree;
     private Rect _panelRect;
     private CameraController _camera;
@@ -17,7 +17,7 @@ public class SystemView : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-        _keplerTree = GameObject.FindGameObjectWithTag("SystemRoot").GetComponent<SolarSystem>().tree;
+        _keplerTree = SolarSystem.tree;
         if (_keplerTree == null)
             throw new Exception();
 

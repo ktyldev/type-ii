@@ -23,7 +23,7 @@ public class SolarSystem : MonoBehaviour {
     public static float TimeWarp { get { return _instance.timeWarp; } }
     public GameObject root;
 
-    public KeplerTreeNode tree { get; private set; }
+    public static KeplerTreeNode tree { get; private set; }
     
     void Awake() {
         if (_instance != null)
@@ -35,7 +35,6 @@ public class SolarSystem : MonoBehaviour {
 
     private void BuildTree() {
         tree = Instantiate(root, transform).GetComponent<KeplerTreeNode>();
-        tree.isRoot = true;
         tree.BuildSatellites();
     }
 }
