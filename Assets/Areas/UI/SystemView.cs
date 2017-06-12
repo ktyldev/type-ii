@@ -37,7 +37,7 @@ public class SystemView : MonoBehaviour {
         var indentMargin = 10;
 
         if (GUI.Button(new Rect(x + recursionLevel * indentMargin, y, buttonWidth, buttonHeight), data.designation)) {
-            Camera.main.GetComponent<CameraController>().Track(data.transform);
+            Camera.main.GetComponent<CameraController>().Track(data.transform, data.radius * SolarSystem.ScaleRadius);
         }
         y += buttonHeight + buttonMargin;
 

@@ -92,7 +92,8 @@ public class CameraController : MonoBehaviour {
         return _distance;
     }
 
-    public void Track(Transform target) {
+    public void Track(Transform target, float distance) {
         _target = target;
+        _zoom = distance;
     }
 }

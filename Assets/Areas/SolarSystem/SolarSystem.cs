@@ -7,18 +7,31 @@ using UnityEngine;
 /// READ: the universe. This is the root object for orbital movement.
 /// </summary>
 public class SolarSystem : MonoBehaviour {
+    private static SolarSystem _instance;
+
+    // Number of real units are represented by a game unit
+    public float scaleRadius = 0.5f;
+    public float scaleDistance = 1000000;
+    public static float ScaleRadius { get { return _instance.scaleRadius; } }
+    public static float ScaleDistance { get { return _instance.scaleDistance; } }
+
     public float timeWarp;
     public GameObject root;
-    
+
     public KeplerTreeNode tree { get; private set; }
 
     private List<KeyValuePair<KeplerTreeNode, Orbit>> _orbits;
 
     void Awake() {
+        if (_instance != null)
+            throw new Exception();
+
+        _instance = this;
+
         _orbits = new List<KeyValuePair<KeplerTreeNode, Orbit>>();
         tree = InstantiateKeplerBody(root);
     }
-    
+
     void Update() {
         IncrementOrbits();
     }
@@ -35,9 +48,9 @@ public class SolarSystem : MonoBehaviour {
 
         if (body == null)
             throw new Exception();
-        
+
         if (parent != null) {
-            var orbit = new Orbit(parent, body.distanceFromParent);
+            var orbit = new Orbit(parent, body.distanceFromParent / scaleDistance);
             _orbits.Add(new KeyValuePair<KeplerTreeNode, Orbit>(body, orbit));
         }
 
