@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
 /// <summary>
 /// READ: the universe. This is the root object for orbital movement.
@@ -50,13 +52,13 @@ public class SolarSystem : MonoBehaviour {
             throw new Exception();
 
         if (parent != null) {
-            var orbit = new Orbit(parent, body.distanceFromParent / scaleDistance);
+            parent.AddSatellite(body);
+            var orbit = new Orbit(parent, body);
             _orbits.Add(new KeyValuePair<KeplerTreeNode, Orbit>(body, orbit));
         }
 
         foreach (var satelliteTemplate in body.satelliteTemplates) {
-            var satellite = InstantiateKeplerBody(satelliteTemplate, body);
-            body.satellites.Add(satellite);
+            InstantiateKeplerBody(satelliteTemplate, body);
         }
 
         return body;

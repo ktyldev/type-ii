@@ -6,11 +6,12 @@ using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
 public class SystemView : MonoBehaviour {
-    
+
     private KeplerTreeNode _keplerTree;
     private TreeViewItem _viewRoot;
 
     private Rect _panelRect;
+    private CameraController _camera;
 
     void Awake() {
         _panelRect = new Rect(10, 10, 200, Screen.height - 10);
@@ -21,6 +22,9 @@ public class SystemView : MonoBehaviour {
         _keplerTree = GameObject.FindGameObjectWithTag("SystemRoot").GetComponent<SolarSystem>().tree;
         if (_keplerTree == null)
             throw new Exception();
+
+        _camera = Camera.main.GetComponent<CameraController>();
+        Focus(_keplerTree);
     }
 
     void OnGUI() {
@@ -37,17 +41,19 @@ public class SystemView : MonoBehaviour {
         var indentMargin = 10;
 
         if (GUI.Button(new Rect(x + recursionLevel * indentMargin, y, buttonWidth, buttonHeight), data.designation)) {
-            Camera.main.GetComponent<CameraController>().Track(data.transform, data.radius * SolarSystem.ScaleRadius);
+            Focus(data);
+            Debug.Log("");
         }
+
         y += buttonHeight + buttonMargin;
-
-        if (data.satellites.Any()) {
-
-            foreach (var datum in data.satellites) {
-                y = Node(x, y, datum, recursionLevel + 1);
-            }
+        foreach (var datum in data.Satellites()) {
+            y = Node(x, y, datum, recursionLevel + 1);
         }
 
         return y;
+    }
+
+    private void Focus(KeplerTreeNode node) {
+        _camera.Track(node.transform, node.radius * SolarSystem.ScaleRadius);
     }
 }
