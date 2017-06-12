@@ -8,8 +8,6 @@ using UnityEngine;
 public class SystemView : MonoBehaviour {
 
     private KeplerTreeNode _keplerTree;
-    private TreeViewItem _viewRoot;
-
     private Rect _panelRect;
     private CameraController _camera;
 
@@ -54,6 +52,8 @@ public class SystemView : MonoBehaviour {
     }
 
     private void Focus(KeplerTreeNode node) {
-        _camera.Track(node.transform, node.radius * SolarSystem.ScaleRadius);
+        var focusDistance = 2;
+
+        _camera.Track(node.transform, focusDistance * node.radius * SolarSystem.ScaleRadius);
     }
 }
