@@ -1,74 +1,93 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour {
 
-    public Vector3 positionOffset;
-    public float rotation;
+    public Transform focus;
+    public float initialDistance;
+    public float angle;
+    
+    public float movementSensitivity;
 
-    public float panSpeed = 20;
-    public float panBorderThickness = 10;
-    public Vector2 panLimit;
+    public float zoomSensitivity;
     public float zoomSpeed;
+    public float minZoom;
+    public float maxZoom;
 
-    private Transform _trackedTransform;
+    public float panMargin;
+    
+    private float _distance;
+    private float _zoom;
 
-    void Awake() {
-        transform.Rotate(new Vector3(rotation, 0, 0));
-        transform.position += positionOffset;
+    private Transform _target;
+
+    private float GetVerticalAxis() {
+        if (Input.mousePosition.y > Screen.height - panMargin) {
+            return 1;
+        } else if (Input.mousePosition.y < panMargin) {
+            return -1;
+        }
+
+        return Input.GetAxis("Vertical");
     }
 
-    // Update is called once per frame
-    void Update() {
-        var direction = DirectionInput();
+    private float GetHorizontalAxis() {
+        if (Input.mousePosition.x > Screen.width - panMargin) {
+            return 1;
+        } else if (Input.mousePosition.x < panMargin) {
+            return -1;
+        }
 
-        if (direction != Vector3.zero) {
-            _trackedTransform = null;
-        } else if (_trackedTransform != null) {
-            transform.position = _trackedTransform.position + positionOffset;
+        return Input.GetAxis("Horizontal");
+    }
+
+    private void Start() {
+        _distance = initialDistance;
+        _zoom = _distance;
+    }
+    
+    private void Update() {
+        var v = GetVerticalAxis();
+        var h = GetHorizontalAxis();
+
+        _zoom += Input.GetAxis("Mouse ScrollWheel") * _distance * -zoomSensitivity;
+        _zoom = Mathf.Clamp(_zoom, minZoom, maxZoom);
+
+        if (_target != null) {
+            focus.transform.position = _target.position;
+
+            if (v != 0 || h != 0) {
+                _target = null;
+            }
+        } else {
+            Move(Vector3.forward, v);
+            Move(Vector3.right, h);
+        }
+    }
+    
+    private void Move(Vector3 direction, float axis) {
+        focus.transform.Translate(direction * axis * Mathf.Sqrt(_distance) * movementSensitivity * Time.deltaTime);
+    }
+
+    private void LateUpdate() {
+        if (focus == null)
             return;
-        }
 
-        Move(direction);
+        _distance = Mathf.Lerp(_distance, _zoom, Time.deltaTime * zoomSpeed);
+
+        var dir = new Vector3(0, 0, -_distance);
+        var rotation = Quaternion.Euler(angle, 0, 0);
+
+        transform.position = focus.position + rotation * dir;
+        transform.LookAt(focus.position);
     }
 
-    private void Move(Vector3 direction) {
-        var pos = transform.position;
-
-        pos += direction * panSpeed * Time.deltaTime;
-        pos.y += Scroll(pos);
-
-        pos.x = Mathf.Clamp(pos.x, -panLimit.x, panLimit.y);
-        pos.z = Mathf.Clamp(pos.z, -panLimit.y, panLimit.y);
-
-        transform.position = pos;
+    public float GetCurrentDistanceFromTarget() {
+        return _distance;
     }
 
-    private Vector3 DirectionInput() {
-        var direction = new Vector3();
-        if (Input.GetKey(KeyCode.W) || Input.mousePosition.y >= Screen.height - panBorderThickness) {
-            direction.z = 1;
-        }
-        if (Input.GetKey(KeyCode.S) || Input.mousePosition.y <= panBorderThickness) {
-            direction.z = -1;
-        }
-        if (Input.GetKey(KeyCode.D) || Input.mousePosition.x >= Screen.width - panBorderThickness) {
-            direction.x = 1;
-        }
-        if (Input.GetKey(KeyCode.A) || Input.mousePosition.x <= panBorderThickness) {
-            direction.x = -1;
-        }
-
-        return direction;
-    }
-
-    private float Scroll(Vector3 pos) {
-        return Input.GetAxis("Mouse ScrollWheel") * -zoomSpeed;
-    }
-
-    public void Track(Transform transform) {
-        _trackedTransform = transform;
+    public void Track(Transform target) {
+        _target = target;
     }
 }
