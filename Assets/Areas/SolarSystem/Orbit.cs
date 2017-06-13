@@ -11,7 +11,7 @@ public class Orbit {
     private float _scaledDistance;
 
     public Orbit(KeplerTreeNode parent, KeplerTreeNode child) {
-        var distance = child.distanceFromParent / SolarSystem.ScaleDistance;
+        var distance = child.distanceFromParent;
 
         _centre = parent.transform;
         _speed = Mathf.Sqrt(parent.mass / distance);
@@ -33,8 +33,7 @@ public class Orbit {
 
     public void Draw(LineRenderer renderer) {
         var segments = 100;
-        var positions = new List<Vector3>();
-
+        
         float x, z;
         float angle = 0;
         renderer.positionCount = segments + 1;

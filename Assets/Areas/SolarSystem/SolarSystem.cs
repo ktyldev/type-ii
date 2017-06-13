@@ -12,11 +12,9 @@ public class SolarSystem : MonoBehaviour {
     private static SolarSystem _instance;
 
     // Number of real units are represented by a game unit
-    public float scaleRadius = 0.5f;
-    public float scaleDistance = 1000000;
-    public float scaleOrbits = 2;
+    public float scaleRadius;
+    public float scaleOrbits;
     public static float ScaleRadius { get { return _instance.scaleRadius; } }
-    public static float ScaleDistance { get { return _instance.scaleDistance; } }
     public static float ScaleOrbits { get { return _instance.scaleOrbits; } }
 
     public float timeWarp;
