@@ -16,6 +16,7 @@ public class KeplerTreeNode : MonoBehaviour {
     private GameObject _geometry;
     private List<KeplerTreeNode> _satellites;
     private Orbit _orbit;
+    private LineRenderer _orbitRenderer;
 
     public KeplerTreeNode parent { get { return transform.parent.GetComponent<KeplerTreeNode>(); } }
 
@@ -24,6 +25,8 @@ public class KeplerTreeNode : MonoBehaviour {
 
         _geometry = Instantiate(geometry, transform);
         _geometry.transform.localScale *= SolarSystem.ScaleRadius * radius;
+
+        _orbitRenderer = GetComponent<LineRenderer>();
     }
 
     void Start() {
@@ -37,6 +40,7 @@ public class KeplerTreeNode : MonoBehaviour {
         if (isRoot)
             return;
 
+        _orbit.Draw(_orbitRenderer);
         transform.position = _orbit.Increment(Time.deltaTime * SolarSystem.TimeWarp);
     }
 

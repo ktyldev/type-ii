@@ -30,4 +30,20 @@ public class Orbit {
         _angle += _speed * deltaTime * -1; // orbit anti-clockwise :)
         return _centre.position + new Vector3(Mathf.Sin(_angle), 0, Mathf.Cos(_angle)) * _scaledDistance;
     }
+
+    public void Draw(LineRenderer renderer) {
+        var segments = 100;
+        var positions = new List<Vector3>();
+
+        float x, z;
+        float angle = 0;
+        renderer.positionCount = segments + 1;
+        for (int i = 0; i < segments + 1; i++) {
+            x = Mathf.Sin(Mathf.Deg2Rad * angle) * _scaledDistance;
+            z = Mathf.Cos(Mathf.Deg2Rad * angle) * _scaledDistance;
+
+            renderer.SetPosition(i, new Vector3(x, 0, z) + _centre.position);
+            angle += (360f / segments);
+        }
+    }
 }
