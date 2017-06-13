@@ -2,12 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TypeII;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
 public class SystemView : MonoBehaviour {
-    
-    private KeplerTreeNode _keplerTree;
+
+    private RecursiveTree<KeplerTreeNode> _tree;
     private Rect _panelRect;
     private CameraController _camera;
 
@@ -17,22 +18,22 @@ public class SystemView : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-        _keplerTree = SolarSystem.tree;
-        if (_keplerTree == null)
+        _tree = SolarSystem.Instance.tree;
+        if (_tree == null)
             throw new Exception();
 
         _camera = Camera.main.GetComponent<CameraController>();
-        Focus(_keplerTree);
+        Focus(_tree.root);
     }
 
     void OnGUI() {
         GUI.Box(_panelRect, "Solar System");
 
         var buttonPosition = new Vector2(_panelRect.x + 10, _panelRect.y + 30);
-        Node((int)buttonPosition.x, (int)buttonPosition.y, _keplerTree);
+        DrawRecursiveTreeNode((int)buttonPosition.x, (int)buttonPosition.y, _tree.root);
     }
 
-    private int Node(int x, int y, KeplerTreeNode data, int recursionLevel = 0) {
+    private int DrawRecursiveTreeNode(int x, int y, KeplerTreeNode data, int recursionLevel = 0) {
         var buttonWidth = 100;
         var buttonHeight = 20;
         var buttonMargin = 5;
@@ -44,8 +45,9 @@ public class SystemView : MonoBehaviour {
         }
 
         y += buttonHeight + buttonMargin;
-        foreach (var datum in data.Satellites().OrderBy(s => s.distanceFromParent)) {
-            y = Node(x, y, datum, recursionLevel + 1);
+
+        foreach (var datum in _tree.GetChildren(data).OrderBy(s => s.distanceFromParent)) {
+            y = DrawRecursiveTreeNode(x, y, datum, recursionLevel + 1);
         }
 
         return y;

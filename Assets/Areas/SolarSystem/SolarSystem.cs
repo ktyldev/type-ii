@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TypeII;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -9,30 +10,31 @@ using UnityEngine.Events;
 /// READ: the universe. This is the root object for orbital movement.
 /// </summary>
 public class SolarSystem : MonoBehaviour {
-    private static SolarSystem _instance;
+    public static SolarSystem Instance { get; private set; }
 
     // Number of real units are represented by a game unit
     public float scaleRadius;
     public float scaleOrbits;
-    public static float ScaleRadius { get { return _instance.scaleRadius; } }
-    public static float ScaleOrbits { get { return _instance.scaleOrbits; } }
+    public static float ScaleRadius { get { return Instance.scaleRadius; } }
+    public static float ScaleOrbits { get { return Instance.scaleOrbits; } }
 
     public float timeWarp;
-    public static float TimeWarp { get { return _instance.timeWarp; } }
+    public static float TimeWarp { get { return Instance.timeWarp; } }
     public GameObject root;
 
-    public static KeplerTreeNode tree { get; private set; }
-    
+    // public static KeplerTreeNode rootNode { get; private set; }
+    public RecursiveTree<KeplerTreeNode> tree { get; private set; }
+
     void Awake() {
-        if (_instance != null)
+        if (Instance != null)
             throw new Exception();
 
-        _instance = this;
-        BuildTree();
+        Instance = this;
+        tree = new RecursiveTree<KeplerTreeNode>(root, transform, n => n.satellites);
     }
 
-    private void BuildTree() {
-        tree = Instantiate(root, transform).GetComponent<KeplerTreeNode>();
-        tree.BuildSatellites();
+    public static float GetOrbitDistance(KeplerTreeNode node) {
+        var depth = Instance.tree.GetDepth(node);
+        return node.distanceFromParent * Mathf.Pow(depth + 1, Instance.scaleOrbits);
     }
 }

@@ -9,21 +9,15 @@ public class Orbit {
     private float _speed;
     private Transform _centre;
     private float _scaledDistance;
-
-    public Orbit(KeplerTreeNode parent, KeplerTreeNode child) {
-        var distance = child.distanceFromParent;
+    
+    public Orbit(KeplerTreeNode orbiter) {
+        var parent = SolarSystem.Instance.tree.GetParent(orbiter);
+        var distance = orbiter.distanceFromParent;
 
         _centre = parent.transform;
         _speed = Mathf.Sqrt(parent.mass / distance);
 
-        var depth = 0;
-        var current = _centre;
-        while (current != null) {
-            depth++;
-            current = current.parent;
-        }
-
-        _scaledDistance = distance * Mathf.Pow(depth, SolarSystem.ScaleOrbits);
+        _scaledDistance = SolarSystem.GetOrbitDistance(orbiter);
     }
 
     public Vector3 Increment(float deltaTime) {
