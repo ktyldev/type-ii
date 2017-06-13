@@ -44,7 +44,7 @@ public class SystemView : MonoBehaviour {
         }
 
         y += buttonHeight + buttonMargin;
-        foreach (var datum in data.Satellites()) {
+        foreach (var datum in data.Satellites().OrderBy(s => s.distanceFromParent)) {
             y = Node(x, y, datum, recursionLevel + 1);
         }
 
