@@ -23,6 +23,10 @@ namespace TypeII {
             }
         }
 
+        public List<T> GetAll() {
+            return _allNodes.Select(n => n.data).ToList();
+        }
+
         public Transform GetRootTransform() {
             return _root.data.transform;
         }

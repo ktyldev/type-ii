@@ -41,7 +41,6 @@ public class SystemView : MonoBehaviour {
 
         if (GUI.Button(new Rect(x + recursionLevel * indentMargin, y, buttonWidth, buttonHeight), data.designation)) {
             Focus(data);
-            Debug.Log("");
         }
 
         y += buttonHeight + buttonMargin;
