@@ -19,7 +19,7 @@ public class KeplerTreeNode : MonoBehaviour {
 
     void Awake() {
         _geometry = Instantiate(geometry, transform);
-        _geometry.transform.localScale *= SolarSystem.ScaleRadius * radius;
+        _geometry.transform.localScale *= SolarSystem.Instance.GetScaledRadius(radius) * 2;
 
         _orbitRenderer = GetComponent<LineRenderer>();
     }

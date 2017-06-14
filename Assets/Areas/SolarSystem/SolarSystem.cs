@@ -12,10 +12,11 @@ using UnityEngine.Events;
 public class SolarSystem : MonoBehaviour {
     public static SolarSystem Instance { get; private set; }
 
+    public float fleetOrbitDistance;
+
     // Number of real units are represented by a game unit
     public float scaleRadius;
     public float scaleOrbits;
-    public static float ScaleRadius { get { return Instance.scaleRadius; } }
     public static float ScaleOrbits { get { return Instance.scaleOrbits; } }
 
     public float timeWarp;
@@ -36,8 +37,17 @@ public class SolarSystem : MonoBehaviour {
         var depth = Instance.tree.GetDepth(node);
         return node.distanceFromParent * Mathf.Pow(depth + 1, Instance.scaleOrbits);
     }
-
+    
+    public float GetScaledRadius(float radius) {
+        return radius * scaleRadius;
+    }
+    
     public Orbit MakeOrbit(KeplerTreeNode node) {
         return new Orbit(tree.GetParent(node), node.transform, GetOrbitDistance(node));
+    }
+
+    public Vector3 GetFleetOrbit(KeplerTreeNode node) {
+        var translation = new Vector3(0, scaleRadius * fleetOrbitDistance * node.radius, 0);
+        return node.transform.position + translation;
     }
 }

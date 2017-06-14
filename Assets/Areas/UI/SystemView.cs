@@ -63,6 +63,6 @@ public class SystemView : MonoBehaviour {
 
     private void Focus(KeplerTreeNode node) {
         var focusDistance = 2;
-        _camera.Track(node.transform, focusDistance * node.radius * SolarSystem.ScaleRadius);
+        _camera.Track(node.transform, focusDistance * SolarSystem.Instance.GetScaledRadius(node.radius));
     }
 }
