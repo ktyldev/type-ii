@@ -9,14 +9,19 @@ using UnityEngine;
 public class SystemView : MonoBehaviour {
 
     public GameObject gameController;
+    public float panelHeight;
+    public float panelWidth;
+    public float margin;
+
+    public float nodeWidth;
+    public float nodeIndent;
 
     private RecursiveTree<KeplerTreeNode> _tree;
     private Rect _panelRect;
     private CameraController _camera;
-    private MouseManager _mouse;
 
     void Awake() {
-        _panelRect = new Rect(10, 10, 200, Screen.height - 10);
+        _panelRect = new Rect(margin, margin, panelWidth, panelHeight);
     }
 
     // Use this for initialization
@@ -26,7 +31,6 @@ public class SystemView : MonoBehaviour {
             throw new Exception();
 
         _camera = Camera.main.GetComponent<CameraController>();
-        _mouse = gameController.GetComponent<MouseManager>();
         Focus(_tree.root);
     }
 
@@ -38,17 +42,13 @@ public class SystemView : MonoBehaviour {
 
         var buttonPosition = new Vector2(x, y);
         y += DrawRecursiveTreeNode((int)buttonPosition.x, (int)buttonPosition.y, _tree.root);
-
-        GUI.Label(new Rect(x, y, 100, 20), _mouse.selectedObject != null ? _mouse.selectedObject.GetComponent<KeplerTreeNode>().designation : "");
     }
 
     private int DrawRecursiveTreeNode(int x, int y, KeplerTreeNode data, int recursionLevel = 0) {
-        var buttonWidth = 100;
         var buttonHeight = 20;
         var buttonMargin = 5;
-        var indentMargin = 10;
 
-        if (GUI.Button(new Rect(x + recursionLevel * indentMargin, y, buttonWidth, buttonHeight), data.designation)) {
+        if (GUI.Button(new Rect(x + recursionLevel * nodeIndent, y, nodeWidth, buttonHeight), data.designation)) {
             Focus(data);
         }
 
@@ -63,7 +63,6 @@ public class SystemView : MonoBehaviour {
 
     private void Focus(KeplerTreeNode node) {
         var focusDistance = 2;
-
         _camera.Track(node.transform, focusDistance * node.radius * SolarSystem.ScaleRadius);
     }
 }

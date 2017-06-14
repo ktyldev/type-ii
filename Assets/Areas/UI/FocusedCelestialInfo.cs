@@ -6,7 +6,12 @@ using UnityEngine;
 public class FocusedCelestialInfo : MonoBehaviour {
 
     public GameObject gameController;
+    public float panelWidth;
+    public float panelHeight;
+    public float margin;
 
+    public float labelLength;
+    
     private MouseManager _mouse;
     private Rect _panelRect;
     private KeplerTreeNode _focusedBody;
@@ -19,7 +24,11 @@ public class FocusedCelestialInfo : MonoBehaviour {
         _mouse.onSelect.AddListener(() => _focusedBody = _mouse.selectedObject.GetComponent<KeplerTreeNode>());
         _mouse.onDeselect.AddListener(() => _focusedBody = null);
 
-        _panelRect = new Rect(Screen.width - 200, Screen.height - 200, 190, 190);
+        _panelRect = new Rect(
+            Screen.width - (panelWidth + margin), 
+            Screen.height - (panelHeight + margin), 
+            panelWidth, 
+            panelHeight);
     }
 
     void OnGUI() {
@@ -39,7 +48,7 @@ public class FocusedCelestialInfo : MonoBehaviour {
         var labels = GetNodeData();
 
         foreach (var labelText in labels) {
-            GUI.Label(new Rect(x, y, 170, labelHeight), labelText);
+            GUI.Label(new Rect(x, y, labelLength, labelHeight), labelText);
             y += labelHeight;
         }
     }
