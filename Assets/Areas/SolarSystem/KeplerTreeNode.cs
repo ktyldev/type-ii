@@ -27,7 +27,7 @@ public class KeplerTreeNode : MonoBehaviour {
     void Start() {
         _isRoot = SolarSystem.Instance.tree.GetDepth(this) == 0;
         if (!_isRoot) {
-            _orbit = new Orbit(this);
+            _orbit = SolarSystem.Instance.MakeOrbit(this);
         }
     }
 

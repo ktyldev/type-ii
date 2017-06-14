@@ -22,7 +22,6 @@ public class SolarSystem : MonoBehaviour {
     public static float TimeWarp { get { return Instance.timeWarp; } }
     public GameObject root;
 
-    // public static KeplerTreeNode rootNode { get; private set; }
     public RecursiveTree<KeplerTreeNode> tree { get; private set; }
 
     void Awake() {
@@ -36,5 +35,9 @@ public class SolarSystem : MonoBehaviour {
     public static float GetOrbitDistance(KeplerTreeNode node) {
         var depth = Instance.tree.GetDepth(node);
         return node.distanceFromParent * Mathf.Pow(depth + 1, Instance.scaleOrbits);
+    }
+
+    public Orbit MakeOrbit(KeplerTreeNode node) {
+        return new Orbit(tree.GetParent(node), node.transform, GetOrbitDistance(node));
     }
 }

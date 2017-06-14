@@ -8,21 +8,17 @@ public class Orbit {
     private float _angle;
     private float _speed;
     private Transform _centre;
-    private float _scaledDistance;
+    private float _distance;
     
-    public Orbit(KeplerTreeNode orbiter) {
-        var parent = SolarSystem.Instance.tree.GetParent(orbiter);
-        var distance = orbiter.distanceFromParent;
-
+    public Orbit(KeplerTreeNode parent, Transform child, float distance) {
         _centre = parent.transform;
         _speed = Mathf.Sqrt(parent.mass / distance);
-
-        _scaledDistance = SolarSystem.GetOrbitDistance(orbiter);
+        _distance = distance;
     }
 
     public Vector3 Increment(float deltaTime) {
         _angle += _speed * deltaTime * -1; // orbit anti-clockwise :)
-        return _centre.position + new Vector3(Mathf.Sin(_angle), 0, Mathf.Cos(_angle)) * _scaledDistance;
+        return _centre.position + new Vector3(Mathf.Sin(_angle), 0, Mathf.Cos(_angle)) * _distance;
     }
 
     public void Draw(LineRenderer renderer) {
@@ -32,8 +28,8 @@ public class Orbit {
         float angle = 0;
         renderer.positionCount = segments + 1;
         for (int i = 0; i < segments + 1; i++) {
-            x = Mathf.Sin(Mathf.Deg2Rad * angle) * _scaledDistance;
-            z = Mathf.Cos(Mathf.Deg2Rad * angle) * _scaledDistance;
+            x = Mathf.Sin(Mathf.Deg2Rad * angle) * _distance;
+            z = Mathf.Cos(Mathf.Deg2Rad * angle) * _distance;
 
             renderer.SetPosition(i, new Vector3(x, 0, z) + _centre.position);
             angle += (360f / segments);
