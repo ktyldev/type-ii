@@ -3,9 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class MouseManager : MonoBehaviour {
     public GameObject selectedObject;
+
+    public UnityEvent onSelect;
+    public UnityEvent onDeselect;
+
+    void Awake() {
+        onSelect = new UnityEvent();
+        onDeselect = new UnityEvent();
+    }
 
     void Update() {
         if (Input.GetMouseButtonUp(0)) {
@@ -31,10 +40,13 @@ public class MouseManager : MonoBehaviour {
     }
 
     private void SelectObject(GameObject go) {
+        ClearSelection();
         selectedObject = go;
+        onSelect.Invoke();
     }
 
     private void ClearSelection() {
+        onDeselect.Invoke();
         selectedObject = null;
     }
 }

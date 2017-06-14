@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour {
 
+    public GameObject gameController;
+
     public Transform focus;
     public float initialDistance;
     public float angle;
@@ -26,6 +28,9 @@ public class CameraController : MonoBehaviour {
     private void Start() {
         _distance = initialDistance;
         _zoom = _distance;
+
+        var mouseManager = gameController.GetComponent<MouseManager>();
+        mouseManager.onSelect.AddListener(() => Track(mouseManager.selectedObject.transform));
     }
     
     private void Update() {
@@ -63,6 +68,10 @@ public class CameraController : MonoBehaviour {
 
     private void Move(Vector3 direction, float axis) {
         focus.transform.Translate(direction * axis * Mathf.Sqrt(_distance) * movementSensitivity * Time.deltaTime);
+    }
+
+    public void Track(Transform target) {
+        Track(target, _zoom);
     }
 
     public void Track(Transform target, float distance) {

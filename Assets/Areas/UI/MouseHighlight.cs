@@ -5,26 +5,39 @@ using UnityEngine;
 
 public class MouseHighlight : MonoBehaviour {
 
+    public GameObject gameController;
+    public GameObject highlightGraphic;
+
+    private MouseManager _manager;
     private List<KeplerTreeNode> _allNodes;
+
+    private Transform _target;
+    private GameObject _graphic;
 
     // Use this for initialization
     void Start() {
         _allNodes = SolarSystem.Instance.tree.GetAll();
+        _manager = gameController.GetComponent<MouseManager>();
+        _manager.onSelect.AddListener(() => BeginHighlighting(_manager.selectedObject));
+        _manager.onDeselect.AddListener(StopHighlighting);
     }
 
     // Update is called once per frame
     void Update() {
-        if (Input.GetMouseButtonUp(1)) {
-            var closest = _allNodes
-                .Select(n => new {
-                    Data = n,
-                    Distance = GetDistance(n)
-                })
-                .OrderBy(_ => _.Distance)
-                .FirstOrDefault();
+        if (_target == null)
+            return;
 
-            Debug.Log(closest.Data.designation + ": " + closest.Distance.ToString());
-        }
+        _graphic.transform.position = Camera.main.WorldToScreenPoint(_target.position);
+    }
+
+    private void BeginHighlighting(GameObject obj) {
+        _target = obj.transform;
+        _graphic = Instantiate(highlightGraphic, transform);
+    }
+
+    private void StopHighlighting() {
+        Destroy(_graphic);
+        _target = null;
     }
 
     private float GetDistance(KeplerTreeNode node) {
