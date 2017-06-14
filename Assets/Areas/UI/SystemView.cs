@@ -8,9 +8,12 @@ using UnityEngine;
 
 public class SystemView : MonoBehaviour {
 
+    public GameObject gameController;
+
     private RecursiveTree<KeplerTreeNode> _tree;
     private Rect _panelRect;
     private CameraController _camera;
+    private MouseManager _mouse;
 
     void Awake() {
         _panelRect = new Rect(10, 10, 200, Screen.height - 10);
@@ -23,14 +26,20 @@ public class SystemView : MonoBehaviour {
             throw new Exception();
 
         _camera = Camera.main.GetComponent<CameraController>();
+        _mouse = gameController.GetComponent<MouseManager>();
         Focus(_tree.root);
     }
 
     void OnGUI() {
         GUI.Box(_panelRect, "Solar System");
 
-        var buttonPosition = new Vector2(_panelRect.x + 10, _panelRect.y + 30);
-        DrawRecursiveTreeNode((int)buttonPosition.x, (int)buttonPosition.y, _tree.root);
+        var x = _panelRect.x + 10;
+        var y = _panelRect.y + 30;
+
+        var buttonPosition = new Vector2(x, y);
+        y += DrawRecursiveTreeNode((int)buttonPosition.x, (int)buttonPosition.y, _tree.root);
+
+        GUI.Label(new Rect(x, y, 100, 20), _mouse.selectedObject != null ? _mouse.selectedObject.GetComponent<KeplerTreeNode>().designation : "");
     }
 
     private int DrawRecursiveTreeNode(int x, int y, KeplerTreeNode data, int recursionLevel = 0) {
