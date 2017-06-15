@@ -16,7 +16,7 @@ public class SystemView : MonoBehaviour {
     public float nodeWidth;
     public float nodeIndent;
 
-    private RecursiveTree<KeplerTreeNode> _tree;
+    private RecursiveTree<OrbitalBody> _tree;
     private Rect _panelRect;
     private CameraController _camera;
 
@@ -44,7 +44,7 @@ public class SystemView : MonoBehaviour {
         y += DrawRecursiveTreeNode((int)buttonPosition.x, (int)buttonPosition.y, _tree.root);
     }
 
-    private int DrawRecursiveTreeNode(int x, int y, KeplerTreeNode data, int recursionLevel = 0) {
+    private int DrawRecursiveTreeNode(int x, int y, OrbitalBody data, int recursionLevel = 0) {
         var buttonHeight = 20;
         var buttonMargin = 5;
 
@@ -61,7 +61,7 @@ public class SystemView : MonoBehaviour {
         return y;
     }
 
-    private void Focus(KeplerTreeNode node) {
+    private void Focus(OrbitalBody node) {
         var focusDistance = 2;
         _camera.Track(node.transform, focusDistance * SolarSystem.Instance.GetScaledRadius(node.radius));
     }

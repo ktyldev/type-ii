@@ -16,7 +16,7 @@ public class FleetFactory : MonoBehaviour {
 		
 	}
 
-    public Fleet BuildFleet(KeplerTreeNode buildLocation) {
+    public Fleet BuildFleet(OrbitalBody buildLocation) {
         var newFleet = Instantiate(fleet, transform).GetComponent<Fleet>();
         newFleet.SetTarget(buildLocation);
         return newFleet;

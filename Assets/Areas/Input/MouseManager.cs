@@ -25,7 +25,7 @@ public class MouseManager : MonoBehaviour {
                 var hitObject = hit.transform.gameObject;
                 var root = hit.transform.root.gameObject;
 
-                while (hitObject.GetComponent<KeplerTreeNode>() == null) {
+                while (hitObject.GetComponent<OrbitalBody>() == null) {
                     if (hitObject == root)
                         return;
 

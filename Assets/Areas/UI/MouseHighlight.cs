@@ -9,7 +9,7 @@ public class MouseHighlight : MonoBehaviour {
     public GameObject highlightGraphic;
 
     private MouseManager _manager;
-    private List<KeplerTreeNode> _allNodes;
+    private List<OrbitalBody> _allNodes;
 
     private Transform _target;
     private GameObject _graphic;
@@ -40,7 +40,7 @@ public class MouseHighlight : MonoBehaviour {
         _target = null;
     }
 
-    private float GetDistance(KeplerTreeNode node) {
+    private float GetDistance(OrbitalBody node) {
         var nodeScreenPos = Camera.main.WorldToScreenPoint(node.transform.position);
         return Vector3.Distance(Input.mousePosition, nodeScreenPos);
     }

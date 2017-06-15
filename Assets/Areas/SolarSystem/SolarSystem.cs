@@ -23,17 +23,17 @@ public class SolarSystem : MonoBehaviour {
     public static float TimeWarp { get { return Instance.timeWarp; } }
     public GameObject root;
 
-    public RecursiveTree<KeplerTreeNode> tree { get; private set; }
+    public RecursiveTree<OrbitalBody> tree { get; private set; }
 
     void Awake() {
         if (Instance != null)
             throw new Exception();
 
         Instance = this;
-        tree = new RecursiveTree<KeplerTreeNode>(root, transform, n => n.satellites);
+        tree = new RecursiveTree<OrbitalBody>(root, transform, n => n.satellites);
     }
 
-    public static float GetOrbitDistance(KeplerTreeNode node) {
+    public static float GetOrbitDistance(OrbitalBody node) {
         var depth = Instance.tree.GetDepth(node);
         return node.distanceFromParent * Mathf.Pow(depth + 1, Instance.scaleOrbits);
     }
@@ -42,11 +42,11 @@ public class SolarSystem : MonoBehaviour {
         return radius * scaleRadius;
     }
     
-    public Orbit MakeOrbit(KeplerTreeNode node) {
+    public Orbit MakeOrbit(OrbitalBody node) {
         return new Orbit(tree.GetParent(node), node.transform, GetOrbitDistance(node));
     }
 
-    public Vector3 GetFleetOrbit(KeplerTreeNode node) {
+    public Vector3 GetFleetOrbit(OrbitalBody node) {
         var translation = new Vector3(0, scaleRadius * fleetOrbitDistance * node.radius, 0);
         return node.transform.position + translation;
     }

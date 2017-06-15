@@ -14,7 +14,7 @@ public class FocusedCelestialInfo : MonoBehaviour {
     
     private MouseManager _mouse;
     private Rect _panelRect;
-    private KeplerTreeNode _focusedBody;
+    private OrbitalBody _focusedBody;
     private FleetFactory _fleets;
 
     void Start() {
@@ -22,7 +22,7 @@ public class FocusedCelestialInfo : MonoBehaviour {
         if (_mouse == null)
             throw new Exception();
 
-        _mouse.onSelect.AddListener(() => _focusedBody = _mouse.selectedObject.GetComponent<KeplerTreeNode>());
+        _mouse.onSelect.AddListener(() => _focusedBody = _mouse.selectedObject.GetComponent<OrbitalBody>());
         _mouse.onDeselect.AddListener(() => _focusedBody = null);
 
         _fleets = gameController.GetComponentInChildren<FleetFactory>();

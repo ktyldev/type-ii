@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Fleet : MonoBehaviour {
 
-    private KeplerTreeNode _target;
+    private OrbitalBody _target;
     
     private bool _inOrbit;
     private float _orbitDistance = 1.2f;
@@ -21,7 +21,7 @@ public class Fleet : MonoBehaviour {
         }
 	}
 
-    public void SetTarget(KeplerTreeNode target) {
+    public void SetTarget(OrbitalBody target) {
         _inOrbit = true;
         _target = target;
     }

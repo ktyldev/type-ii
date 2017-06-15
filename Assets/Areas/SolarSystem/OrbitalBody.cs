@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class KeplerTreeNode : MonoBehaviour {
+public class OrbitalBody : MonoBehaviour {
     public string designation;
     public GameObject geometry;
     public GameObject[] satellites;
