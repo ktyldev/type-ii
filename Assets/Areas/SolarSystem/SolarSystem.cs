@@ -22,6 +22,7 @@ public class SolarSystem : MonoBehaviour {
     public float timeWarp;
     public static float TimeWarp { get { return Instance.timeWarp; } }
     public GameObject root;
+    public static float deltaTime { get { return Time.deltaTime * Instance.timeWarp; } }
 
     public RecursiveTree<OrbitalBody> tree { get; private set; }
 
@@ -37,17 +38,16 @@ public class SolarSystem : MonoBehaviour {
         var depth = Instance.tree.GetDepth(node);
         return node.distanceFromParent * Mathf.Pow(depth + 1, Instance.scaleOrbits);
     }
-    
+
     public float GetScaledRadius(float radius) {
         return radius * scaleRadius;
     }
-    
+
     public Orbit MakeOrbit(OrbitalBody node) {
         return new Orbit(tree.GetParent(node), node.transform, GetOrbitDistance(node));
     }
 
-    public Vector3 GetFleetOrbit(OrbitalBody node) {
-        var translation = new Vector3(0, scaleRadius * fleetOrbitDistance * node.radius, 0);
-        return node.transform.position + translation;
+    public float GetFleetOrbitDistance(OrbitalBody body) {
+        return scaleRadius * fleetOrbitDistance * body.radius;
     }
 }
