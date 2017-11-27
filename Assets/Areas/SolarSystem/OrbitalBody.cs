@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class OrbitalBody : MonoBehaviour {
+public class OrbitalBody : MonoBehaviour
+{
     public string designation;
     public GameObject geometry;
     public GameObject[] satellites;
@@ -16,26 +17,30 @@ public class OrbitalBody : MonoBehaviour {
     private GameObject _geometry;
     private Orbit _orbit;
     private LineRenderer _orbitRenderer;
+    private SolarSystem _solarSystem;
 
-    void Awake() {
-        _geometry = Instantiate(geometry, transform);
-        _geometry.transform.localScale *= SolarSystem.Instance.GetScaledRadius(radius) * 2;
+    void Start()
+    {
+        _solarSystem = GameObject.FindGameObjectWithTag(GameTags.SolarSystem).GetComponent<SolarSystem>();
 
         _orbitRenderer = GetComponent<LineRenderer>();
-    }
 
-    void Start() {
-        _isRoot = SolarSystem.Instance.tree.GetDepth(this) == 0;
-        if (!_isRoot) {
-            _orbit = SolarSystem.Instance.MakeOrbit(this);
+        _geometry = Instantiate(geometry, transform);
+        _geometry.transform.localScale *= _solarSystem.GetScaledRadius(radius) * 2;
+
+        _isRoot = _solarSystem.tree.GetDepth(this) == 0;
+        if (!_isRoot)
+        {
+            _orbit = _solarSystem.MakeOrbit(this);
         }
     }
 
-    void Update() {
+    void Update()
+    {
         if (_isRoot)
             return;
 
         _orbit.Draw(_orbitRenderer);
-        transform.position = _orbit.Increment(Time.deltaTime * SolarSystem.TimeWarp);
+        transform.position = _orbit.Increment(Time.deltaTime * _solarSystem.TimeWarp);
     }
 }

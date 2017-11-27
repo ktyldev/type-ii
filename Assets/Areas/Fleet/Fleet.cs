@@ -10,21 +10,23 @@ public class Fleet : MonoBehaviour {
     private OrbitalBody _target;
     private WaypointFactory _waypoints;
     private Waypoint _waypoint;
+    private SolarSystem _solarSystem;
 
     // Use this for initialization
     void Start () {
-        _waypoints = GameObject.FindGameObjectWithTag("GameController").GetComponentInChildren<WaypointFactory>();
+        _waypoints = GameObject.FindGameObjectWithTag(GameTags.GameController).GetComponentInChildren<WaypointFactory>();
+        _solarSystem = GameObject.FindGameObjectWithTag(GameTags.SolarSystem).GetComponent<SolarSystem>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
         if (_waypoint == null) {
-            var distance = SolarSystem.Instance.GetFleetOrbitDistance(_target);
+            var distance = _solarSystem.GetFleetOrbitDistance(_target);
             var translation = new Vector3(0, distance, 0);
             transform.position = _target.transform.position + translation;
 
             if (Input.GetKeyDown(KeyCode.Space)) {
-                var tree = SolarSystem.Instance.tree;
+                var tree = _solarSystem.tree;
 
                 var currentDepth = tree.GetDepth(_target);
                 _target = tree.GetAll()
@@ -37,7 +39,7 @@ public class Fleet : MonoBehaviour {
             }
         } else {
             transform.LookAt(_waypoint.transform);
-            transform.Translate(Vector3.forward * speed * SolarSystem.deltaTime);
+            transform.Translate(Vector3.forward * speed * _solarSystem.DeltaTime);
         }
 	}
 

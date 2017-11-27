@@ -10,33 +10,28 @@ using UnityEngine.Events;
 /// READ: the universe. This is the root object for orbital movement.
 /// </summary>
 public class SolarSystem : MonoBehaviour {
-    public static SolarSystem Instance { get; private set; }
-
+    
     public float fleetOrbitDistance;
 
     // Number of real units are represented by a game unit
     public float scaleRadius;
     public float scaleOrbits;
-    public static float ScaleOrbits { get { return Instance.scaleOrbits; } }
-
     public float timeWarp;
-    public static float TimeWarp { get { return Instance.timeWarp; } }
+    
     public GameObject root;
-    public static float deltaTime { get { return Time.deltaTime * Instance.timeWarp; } }
+    public float ScaleOrbits { get { return scaleOrbits; } }
+    public float TimeWarp { get { return timeWarp; } }
+    public float DeltaTime { get { return Time.deltaTime * timeWarp; } }
 
     public RecursiveTree<OrbitalBody> tree { get; private set; }
-
+    
     void Awake() {
-        if (Instance != null)
-            throw new Exception();
-
-        Instance = this;
         tree = new RecursiveTree<OrbitalBody>(root, transform, n => n.satellites);
     }
 
-    public static float GetOrbitDistance(OrbitalBody node) {
-        var depth = Instance.tree.GetDepth(node);
-        return node.distanceFromParent * Mathf.Pow(depth + 1, Instance.scaleOrbits);
+    public float GetOrbitDistance(OrbitalBody node) {
+        var depth = tree.GetDepth(node);
+        return node.distanceFromParent * Mathf.Pow(depth + 1, scaleOrbits);
     }
 
     public float GetScaledRadius(float radius) {
