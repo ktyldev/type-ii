@@ -5,7 +5,7 @@ using System.Text;
 
 public class GameTags
 {
-    public const string GameController = "GameController";
+    public const string Input = "Input";
     public const string SolarSystem = "SolarSystem";
 }
 

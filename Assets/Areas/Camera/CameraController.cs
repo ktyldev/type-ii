@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour {
-
-    public GameObject gameController;
-
+    
     public Transform focus;
     public float initialDistance;
     public float angle;
@@ -29,7 +27,7 @@ public class CameraController : MonoBehaviour {
         _distance = initialDistance;
         _zoom = _distance;
 
-        var mouseManager = gameController.GetComponent<MouseManager>();
+        var mouseManager = GameObject.FindGameObjectWithTag(GameTags.Input).GetComponent<MouseManager>();
         mouseManager.onSelect.AddListener(() => Track(mouseManager.selectedObject.transform));
     }
     
