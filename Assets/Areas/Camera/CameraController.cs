@@ -28,7 +28,7 @@ public class CameraController : MonoBehaviour {
         _zoom = _distance;
 
         var mouseManager = GameObject.FindGameObjectWithTag(GameTags.Input).GetComponent<MouseManager>();
-        mouseManager.onSelect.AddListener(() => Track(mouseManager.selectedObject.transform));
+        mouseManager.onSelect.AddListener(go => Track(go.transform));
     }
     
     private void Update() {

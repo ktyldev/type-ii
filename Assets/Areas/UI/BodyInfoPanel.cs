@@ -20,8 +20,8 @@ public class BodyInfoPanel : MonoBehaviour
         if (_mouse == null)
             throw new Exception();
 
-        _mouse.onSelect.AddListener(() => _focusedBody = _mouse.selectedObject.GetComponent<OrbitalBody>());
-        _mouse.onDeselect.AddListener(() => _focusedBody = null);
+        _mouse.onSelect.AddListener(go => _focusedBody = go.GetComponent<OrbitalBody>());
+        _mouse.onDeselect.AddListener(_ => _focusedBody = null);
     }
 
     void OnGUI()

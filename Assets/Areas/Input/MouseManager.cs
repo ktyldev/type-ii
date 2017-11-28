@@ -5,48 +5,57 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class MouseManager : MonoBehaviour {
-    public GameObject selectedObject;
+public class MouseManager : MonoBehaviour
+{
+    // public GameObject selectedObject;
 
-    public UnityEvent onSelect;
-    public UnityEvent onDeselect;
+    public MouseSelectionEvent onSelect;
+    public MouseDeselectionEvent onDeselect;
 
-    void Awake() {
-        onSelect = new UnityEvent();
-        onDeselect = new UnityEvent();
+    private GameObject _selectedObject;
+
+    void Awake()
+    {
+        onSelect = new MouseSelectionEvent();
+        onDeselect = new MouseDeselectionEvent();
     }
 
-    void Update() {
-        if (Input.GetMouseButtonUp(0)) {
+    void Update()
+    {
+        if (Input.GetMouseButtonUp(0))
+        {
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             RaycastHit hit;
-            if (Physics.Raycast(ray, out hit)) {
+            if (Physics.Raycast(ray, out hit))
+            {
                 var hitObject = hit.transform.gameObject;
                 var root = hit.transform.root.gameObject;
 
-                while (hitObject.GetComponent<OrbitalBody>() == null) {
+                while (hitObject.GetComponent<OrbitalBody>() == null)
+                {
                     if (hitObject == root)
                         return;
 
                     hitObject = hitObject.transform.parent.gameObject;
                 }
 
-                SelectObject(hitObject);
-            } else {
-                ClearSelection();
+                _selectedObject = hitObject;
+                onSelect.Invoke(_selectedObject);
+            }
+            else
+            {
+                onDeselect.Invoke(_selectedObject);
+                _selectedObject = null;
             }
         }
     }
-
-    private void SelectObject(GameObject go) {
-        ClearSelection();
-        selectedObject = go;
-        onSelect.Invoke();
+    
+    public class MouseSelectionEvent : UnityEvent<GameObject>
+    {
     }
 
-    private void ClearSelection() {
-        onDeselect.Invoke();
-        selectedObject = null;
+    public class MouseDeselectionEvent : UnityEvent<GameObject>
+    {
     }
 }
