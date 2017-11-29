@@ -4,93 +4,106 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-namespace TypeII {
-    public class RecursiveTree<T> where T : MonoBehaviour {
-        private List<Node> _allNodes = new List<Node>();
-        private Node _root;
-        private Func<T, IEnumerable<GameObject>> _getChildTemplates;
+public class RecursiveTree<T> where T : MonoBehaviour
+{
+    private List<Node> _allNodes = new List<Node>();
+    private Node _root;
+    private Func<T, IEnumerable<GameObject>> _getChildTemplates;
 
-        public T root { get { return _root.data; } }
+    public T root { get { return _root.data; } }
 
-        public RecursiveTree(GameObject rootTemplate, Transform rootParent, Func<T, IEnumerable<GameObject>> getChildTemplates) {
-            _getChildTemplates = getChildTemplates;
+    public RecursiveTree(GameObject rootTemplate, Transform rootParent, Func<T, IEnumerable<GameObject>> getChildTemplates)
+    {
+        _getChildTemplates = getChildTemplates;
 
-            var root = UnityEngine.Object.Instantiate(rootTemplate, rootParent);
-            _root = CreateNode(root.GetComponent<T>());
+        var root = UnityEngine.Object.Instantiate(rootTemplate, rootParent);
+        _root = CreateNode(root.GetComponent<T>());
 
-            foreach (var template in _getChildTemplates(_root.data)) {
-                AddChild(_root, template, _getChildTemplates);
-            }
+        foreach (var template in _getChildTemplates(_root.data))
+        {
+            AddChild(_root, template, _getChildTemplates);
         }
+    }
 
-        public List<T> GetAll() {
-            return _allNodes.Select(n => n.data).ToList();
+    public List<T> GetAll()
+    {
+        return _allNodes.Select(n => n.data).ToList();
+    }
+
+    public Transform GetRootTransform()
+    {
+        return _root.data.transform;
+    }
+
+    public T GetParent(T data)
+    {
+        var parent = GetNode(data).parent;
+        return parent != null ? parent.data : null;
+    }
+
+    public List<T> GetChildren(T parent)
+    {
+        return GetNode(parent).children
+            .Select(n => n.data)
+            .ToList();
+    }
+
+    private void AddChild(Node parent, GameObject dataTemplate, Func<T, IEnumerable<GameObject>> getChildTemplates)
+    {
+        var data = UnityEngine.Object.Instantiate(dataTemplate).GetComponent<T>();
+        if (data == null)
+            throw new Exception();
+
+        data.transform.SetParent(parent.data.transform);
+        var node = CreateNode(data, parent);
+
+        foreach (var template in getChildTemplates(data))
+        {
+            AddChild(node, template, getChildTemplates);
         }
+    }
 
-        public Transform GetRootTransform() {
-            return _root.data.transform;
-        }
+    public int GetDepth(T data)
+    {
+        return GetNode(data).depth;
+    }
 
-        public T GetParent(T data) {
-            var parent = GetNode(data).parent;
-            return parent != null ? parent.data : null;
-        }
+    private Node GetNode(T data)
+    {
+        var node = _allNodes.SingleOrDefault(n => n.data.Equals(data));
+        if (node == null)
+            throw new Exception();
 
-        public List<T> GetChildren(T parent) {
-            return GetNode(parent).children
-                .Select(n => n.data)
-                .ToList();
-        }
+        return node;
+    }
 
-        private void AddChild(Node parent, GameObject dataTemplate, Func<T, IEnumerable<GameObject>> getChildTemplates) {
-            var data = UnityEngine.Object.Instantiate(dataTemplate).GetComponent<T>();
-            if (data == null)
-                throw new Exception();
+    private Node CreateNode(T data, Node parent = null)
+    {
+        var node = new Node(parent, data);
+        _allNodes.Add(node);
+        return node;
+    }
 
-            data.transform.SetParent(parent.data.transform);
-            var node = CreateNode(data, parent);
+    class Node
+    {
+        public readonly int depth;
+        public readonly T data;
+        public readonly Node parent;
+        public readonly List<Node> children;
 
-            foreach (var template in getChildTemplates(data)) {
-                AddChild(node, template, getChildTemplates);
-            }
-        }
+        public Node(Node parent, T data)
+        {
+            this.data = data;
+            this.parent = parent;
+            // Debug.Log(depth);
 
-        public int GetDepth(T data) {
-            return GetNode(data).depth;
-        }
+            children = new List<Node>();
 
-        private Node GetNode(T data) {
-            var node = _allNodes.SingleOrDefault(n => n.data.Equals(data));
-            if (node == null)
-                throw new Exception();
+            depth = parent == null ? 0 : parent.depth + 1;
 
-            return node;
-        }
-
-        private Node CreateNode(T data, Node parent = null) {
-            var node = new Node(parent, data);
-            _allNodes.Add(node);
-            return node;
-        }
-
-        class Node {
-            public readonly int depth;
-            public readonly T data;
-            public readonly Node parent;
-            public readonly List<Node> children;
-
-            public Node(Node parent, T data) {
-                this.data = data;
-                this.parent = parent;
-                // Debug.Log(depth);
-
-                children = new List<Node>();
-
-                depth = parent == null ? 0 : parent.depth + 1;
-
-                if (parent != null) {
-                    parent.children.Add(this);
-                }
+            if (parent != null)
+            {
+                parent.children.Add(this);
             }
         }
     }
