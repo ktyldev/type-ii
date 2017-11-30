@@ -25,6 +25,7 @@ public class TreeView : RowsView
         var node = Instantiate(treeViewItem, transform).GetComponent<TreeViewItem>();
         node.Text = body.designation;
         node.transform.Translate(indentAmount * _tree.GetDepth(body), 0, 0);
+        node.Body = body;
 
         AddRow(node.gameObject);
         _nodes.Add(node, body);

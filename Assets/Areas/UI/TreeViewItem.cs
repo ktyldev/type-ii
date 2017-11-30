@@ -6,9 +6,8 @@ using UnityEngine.UI;
 
 public class TreeViewItem : MonoBehaviour {
     
-    public UnityEvent OnExpand { get; private set; }
-    public UnityEvent OnCollapse { get; private set; }
     public bool IsExpanded { get; private set; }
+
     public string Text {
         set
         {
@@ -16,6 +15,11 @@ public class TreeViewItem : MonoBehaviour {
             name = value;
         }
     }
+
+    public UnityEvent OnExpand { get; private set; }
+    public UnityEvent OnCollapse { get; private set; }
+
+    public OrbitalBody Body { get; set; }
 
     void Awake()
     {
@@ -25,7 +29,8 @@ public class TreeViewItem : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-		
+        var button = GetComponent<Button>();
+        button.onClick.AddListener(() => Camera.main.GetComponent<CameraController>().Track(Body.transform));
 	}
 	
 	// Update is called once per frame
