@@ -11,6 +11,7 @@ public class RecursiveTree<T> where T : MonoBehaviour
     private Func<T, IEnumerable<GameObject>> _getChildTemplates;
 
     public T root { get { return _root.data; } }
+    public int MaxDepth { get { return _allNodes.Max(n => n.depth); } }
 
     public RecursiveTree(GameObject rootTemplate, Transform rootParent, Func<T, IEnumerable<GameObject>> getChildTemplates)
     {

@@ -17,7 +17,7 @@ public class SystemView : MonoBehaviour {
     
     private Rect _panelRect;
     private CameraController _camera;
-    private SolarSystem _solarSystem;
+    private RecursiveTree<OrbitalBody> _tree;
 
     void Awake() {
         _panelRect = new Rect(margin, margin, panelWidth, panelHeight);
@@ -25,12 +25,12 @@ public class SystemView : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-        _solarSystem = GameObject.FindGameObjectWithTag(GameTags.SolarSystem).GetComponent<SolarSystem>();
-        if (_solarSystem.tree == null)
+        _tree = GameObject.FindGameObjectWithTag(GameTags.SolarSystem).GetComponent<SolarSystem>().tree;
+        if (_tree == null)
             throw new Exception();
 
         _camera = Camera.main.GetComponent<CameraController>();
-        Focus(_solarSystem.tree.root);
+        Focus(_tree.root);
     }
 
     void OnGUI() {
@@ -40,7 +40,7 @@ public class SystemView : MonoBehaviour {
         var y = _panelRect.y + 30;
 
         var buttonPosition = new Vector2(x, y);
-        y += DrawRecursiveTreeNode((int)buttonPosition.x, (int)buttonPosition.y, _solarSystem.tree.root);
+        y += DrawRecursiveTreeNode((int)buttonPosition.x, (int)buttonPosition.y, _tree.root);
     }
 
     private int DrawRecursiveTreeNode(int x, int y, OrbitalBody data, int recursionLevel = 0) {
@@ -53,7 +53,7 @@ public class SystemView : MonoBehaviour {
 
         y += buttonHeight + buttonMargin;
 
-        foreach (var datum in _solarSystem.tree.GetChildren(data).OrderBy(s => s.distanceFromParent)) {
+        foreach (var datum in _tree.GetChildren(data).OrderBy(s => s.distanceFromParent)) {
             y = DrawRecursiveTreeNode(x, y, datum, recursionLevel + 1);
         }
 
@@ -62,6 +62,6 @@ public class SystemView : MonoBehaviour {
 
     private void Focus(OrbitalBody node) {
         var focusDistance = 2;
-        _camera.Track(node.transform, focusDistance * _solarSystem.GetScaledRadius(node.radius));
+        _camera.Track(node.transform, focusDistance);
     }
 }
