@@ -13,20 +13,20 @@ public class RowsView : MonoBehaviour
     {
         _rows = new List<GameObject>();
     }
-
+    
     public void Invalidate()
     {
-        _rows = OrderRows(_rows.ToArray()).Reverse().ToList();
+        _rows = OrderRows(_rows.ToArray()).ToList();
+
+        var topY = ((RectTransform)transform).offsetMax.y;
 
         for (int i = 0; i < _rows.Count; i++)
         {
-            var y = (1 + i) * rowHeight;
-            var oldPos = _rows[i].transform.position;
-            _rows[i].transform.position = new Vector3
+            var y = i * rowHeight;
+            _rows[i].GetComponent<RectTransform>().localPosition = new Vector3
             {
-                x = oldPos.x,
-                y = transform.position.y + y,
-                z = 0
+                x = _rows[i].transform.localPosition.x,
+                y = -((RectTransform)transform).rect.y - y
             };
         }
     }
