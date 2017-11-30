@@ -7,17 +7,11 @@ using UnityEngine.Events;
 
 public class MouseManager : MonoBehaviour
 {
-    // public GameObject selectedObject;
-
-    public MouseSelectionEvent onSelect;
-    public MouseDeselectionEvent onDeselect;
-
-    private GameObject _selectedObject;
-
-    void Awake()
+    private SelectionManager _selection;
+    
+    void Start()
     {
-        onSelect = new MouseSelectionEvent();
-        onDeselect = new MouseDeselectionEvent();
+        _selection = GetComponent<SelectionManager>();
     }
 
     void Update()
@@ -27,35 +21,24 @@ public class MouseManager : MonoBehaviour
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
+            if (!Physics.Raycast(ray, out hit))
             {
-                var hitObject = hit.transform.gameObject;
-                var root = hit.transform.root.gameObject;
-
-                while (hitObject.GetComponent<OrbitalBody>() == null)
-                {
-                    if (hitObject == root)
-                        return;
-
-                    hitObject = hitObject.transform.parent.gameObject;
-                }
-
-                _selectedObject = hitObject;
-                onSelect.Invoke(_selectedObject);
+                _selection.Deselect();
+                return;
             }
-            else
+
+            var hitObject = hit.transform.gameObject;
+            var root = hit.transform.root.gameObject;
+
+            while (hitObject.GetComponent<OrbitalBody>() == null)
             {
-                onDeselect.Invoke(_selectedObject);
-                _selectedObject = null;
+                if (hitObject == root)
+                    return;
+
+                hitObject = hitObject.transform.parent.gameObject;
             }
+
+            _selection.Select(hitObject);
         }
-    }
-    
-    public class MouseSelectionEvent : UnityEvent<GameObject>
-    {
-    }
-
-    public class MouseDeselectionEvent : UnityEvent<GameObject>
-    {
     }
 }
