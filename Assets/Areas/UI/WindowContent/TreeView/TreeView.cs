@@ -23,7 +23,6 @@ public class TreeView : RowsView
     private TreeViewItem BuildNode(OrbitalBody body)
     {
         var node = Instantiate(treeViewItem, transform).GetComponent<TreeViewItem>();
-        node.Text = body.designation;
         node.transform.Translate(indentAmount * _tree.GetDepth(body), 0, 0);
         node.Body = body;
 
